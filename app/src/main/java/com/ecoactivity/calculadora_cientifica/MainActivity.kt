@@ -33,9 +33,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btnBack).setOnClickListener {
-            var leght = visor.text.length
+            val leght = visor.text.length
             if (leght > 0) {
                 visor.text = visor.text.subSequence(0, leght - 1)
+            }
+        }
+
+        findViewById<Button>(R.id.btnLimparTudo).setOnClickListener {
+            val leght = visor.text.length
+            if (leght > 0){
+                visor.text = " "
             }
         }
 
