@@ -28,6 +28,10 @@ class MainActivity : AppCompatActivity() {
             "-" to R.id.btnSubtracao, "x" to R.id.btnMultiplicacao
         )
 
+        buttons.forEach { (symbol, id) ->
+            findViewById<Button>(id).setOnClickListener{visor.append(symbol)}
+        }
+
 
 
 
