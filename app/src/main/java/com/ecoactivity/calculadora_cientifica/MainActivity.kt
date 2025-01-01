@@ -25,7 +25,8 @@ class MainActivity : AppCompatActivity() {
             "0" to R.id.btn0, "1" to R.id.btn1, "2" to R.id.btn2,"3" to R.id.btn3,
             "4" to R.id.btn4, "5" to R.id.btn5, "6" to R.id.btn6, "7" to R.id.btn7,
             "8" to R.id.btn8, "9" to R.id.btn9, "+" to R.id.btnSoma, "÷" to R.id.btnDivisao,
-            "-" to R.id.btnSubtracao, "x" to R.id.btnMultiplicacao, "%" to R.id.btnPorcentagem
+            "-" to R.id.btnSubtracao, "x" to R.id.btnMultiplicacao, "%" to R.id.btnPorcentagem,
+            "," to R.id.btnDecimal
         )
 
         buttons.forEach { (symbol, id) ->
@@ -40,15 +41,23 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btnLimparTudo).setOnClickListener {
-            val leght = visor.text.length
-            if (leght > 0){
-                visor.text = " "
-            }
+            visor.text = " "
         }
 
         findViewById<Button>(R.id.btnIgual).setOnClickListener {
-            val resultado = calcular(visor.text.toString())
-            visor.text = resultado.toString()
+            val resultado = calcular(visor.text.toString(), visor)
+            if (resultado == resultado.toInt().toDouble()) {
+                visor.text = String.format("%d", resultado.toInt())
+            } else {
+
+                val formattedResult = if (resultado % 1.0 == 0.0) {
+                    String.format("%d", resultado.toInt())
+                } else {
+
+                    String.format("%.8f", resultado).trimEnd('0').trimEnd('.')
+                }
+                visor.text = formattedResult
+            }
         }
 
         findViewById<Button>(R.id.btnAbreFecha).setOnClickListener {
@@ -62,10 +71,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private  fun calcular(expressao: String): Double {
+    private  fun calcular(expressao: String, visor: TextView): Double {
         return try {
             var valores = expressao.replace("x","*")
                 .replace("÷","/")
+                .replace(",",".")
 
             valores = valores.replace("([0-9]+)%".toRegex()) { matchResult ->
                 val valor = matchResult.value.dropLast(1)
@@ -75,7 +85,10 @@ class MainActivity : AppCompatActivity() {
             expression.evaluate()
         }
         catch (e: Exception){
-            0.0
+            visor.post{
+                visor.text = "ERROR"
+            }
+            return 0.0
         }
     }
 
