@@ -62,5 +62,21 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private  fun calcular(expressao: String): Double {
+        return try {
+            var valores = expressao.replace("x","*")
+                .replace("÷","/")
+
+            valores = valores.replace("([0-9]+)%".toRegex()) { matchResult ->
+                val valor = matchResult.value.dropLast(1)
+                "${valor.toDouble() * 0.01}"
+            }
+            val expression = ExpressionBuilder(valores).build()
+            expression.evaluate()
+        }
+        catch (e: Exception){
+            0.0
+        }
+    }
 
 }
